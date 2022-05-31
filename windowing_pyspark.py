@@ -13,7 +13,19 @@ spark = SparkSession.builder.appName("Windowing_pyspark").getOrCreate()
 df=spark.createDataFrame(df)
 
 # Realizamos el ejercicio de windowing incluyendo 3 tablas en las que se mostrarán rank, dense_rank y row_number,
-# respectivamente.
+# respectivamente. En primer lugar, importamos las funciones y creamos la ventana:
+from pyspark.sql.window import Window
+from pyspark.sql.functions import row_number, rank, dense_rank, col
+window = Window.orderBy(col("power").desc())
 
-rank=df.select("name", "company", "power")
+# Rank
+rank=df.withColumn("rank", rank().over(window))
+rank.show()
+
+# Dense_rank
+rank=df.withColumn("dense_rank", dense_rank().over(window))
+rank.show()
+
+# Row_number
+rank=df.withColumn("row_number", row_number().over(window))
 rank.show()
